@@ -5,9 +5,10 @@ function navigateTo(page) {
     if (page === 'logout') {
         localStorage.removeItem('token');
         window.location.href = 'login.html';
-    } else {
-        window.location.href = page + '.html';
+    } else if (page) {
+        window.location.href = page.endsWith('.html') ? page : `${page}.html`;
     }
+    return false;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -62,28 +63,70 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Handle navigation buttons
-    document.querySelectorAll('[data-nav]').forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            const target = button.getAttribute('data-nav');
-            navigateTo(target);
+    // Handle all navigation buttons and links
+    function setupNavigation() {
+        // Navigation buttons with data-nav attribute
+        document.querySelectorAll('[data-nav]').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = button.getAttribute('data-nav');
+                navigateTo(target);
+            });
         });
-    });
 
-    // Handle login/logout button
-    const loginButton = document.getElementById('loginButton');
-    if (loginButton) {
-        loginButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            const modal = document.getElementById('loginModal');
-            if (modal) {
-                modal.style.display = 'block';
-            } else {
-                navigateTo('login');
-            }
-        });
+        // Login button
+        const loginButton = document.getElementById('loginButton');
+        if (loginButton) {
+            loginButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                const modal = document.getElementById('loginModal');
+                if (modal) {
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    navigateTo('login');
+                }
+            });
+        }
+
+        // Close modal when clicking outside
+        const modal = document.getElementById('loginModal');
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        }
+
+        // Handle form submission
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Add your login logic here
+                const username = document.getElementById('usernameInput')?.value;
+                const password = document.getElementById('codeInput')?.value;
+                
+                // For now, just close the modal
+                const modal = document.getElementById('loginModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+                
+                // Update UI to show logged in state
+                const usernameDisplay = document.getElementById('username');
+                if (username && usernameDisplay) {
+                    usernameDisplay.textContent = username || '사용자';
+                }
+            });
+        }
     }
+
+    // Initialize navigation
+    setupNavigation();
 
     // Attach click handlers to all navigation buttons
     Object.entries(navButtons).forEach(([id, action]) => {

@@ -55,12 +55,37 @@ body {
 
 .currency {
     display: flex;
-    gap: 1rem;
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.currency span {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    white-space: nowrap;
 }
 
 .gold { color: #ffd700; }
 .choco { color: #d4a76a; }
 .money { color: #a5d8ff; }
+
+.login-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: 0.5rem;
+}
+
+.login-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
 
 .main-content {
     flex: 1;
@@ -243,22 +268,49 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     background: none;
     border: none;
     color: #666;
     font-size: 0.7rem;
-    padding: 0.5rem;
+    padding: 0.8rem 0.5rem;
     cursor: pointer;
     transition: all 0.2s ease;
+    flex: 1;
+    min-width: 0;
 }
 
 .nav-btn i {
     font-size: 1.5rem;
     margin-bottom: 0.2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .nav-btn.active {
     color: var(--primary-color);
+}
+
+.nav-btn:hover {
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: white;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 768px;
+    margin: 0 auto;
+    padding: 0.5rem 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
 }
 
 /* Modal */

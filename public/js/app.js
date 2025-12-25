@@ -1,5 +1,31 @@
 // Main application entry point
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded');
+    
+    // Initialize the game object if it doesn't exist
+    window.game = window.game || {};
+    
+    // Add showLoginModal method if it doesn't exist
+    window.game.showLoginModal = function() {
+        const modal = document.getElementById('loginModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+    };
+    
+    // Add init method if it doesn't exist
+    window.game.init = async function() {
+        try {
+            console.log('Initializing game...');
+            // Add your game initialization code here
+            return Promise.resolve();
+        } catch (error) {
+            console.error('Game initialization error:', error);
+            return Promise.reject(error);
+        }
+    };
+    
     // Check if user is already logged in
     const token = localStorage.getItem('token');
     
@@ -14,21 +40,21 @@ document.addEventListener('DOMContentLoaded', () => {
         window.game.showLoginModal();
     }
     
-    // Set up tab navigation
-    const navButtons = document.querySelectorAll('.nav-btn');
-    navButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Remove active class from all buttons
-            navButtons.forEach(btn => btn.classList.remove('active'));
-            // Add active class to clicked button
-            button.classList.add('active');
+    // Add notification function if it doesn't exist
+    if (!window.addNotification) {
+        window.addNotification = function(message, type = 'info') {
+            console.log(`[${type}] ${message}`);
+            // You can add a proper notification UI here
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
             
-            // Here you would typically show/hide different sections based on the tab
-            // For now, we'll just show a message
-            const tab = button.getAttribute('data-tab');
-            console.log(`Switched to ${tab} tab`);
-        });
-    });
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        };
+    }
 });
 
 // Service worker registration for PWA
