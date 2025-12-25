@@ -4,12 +4,10 @@ const Weapon = require('./Weapon');
 const EnhancementAttempt = require('./EnhancementAttempt');
 const Battle = require('./Battle');
 
-const sequelize = new Sequelize(process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/sword_enhancement', {
-  dialect: 'postgres',
-  logging: process.env.NODE_ENV === 'development' ? console.log : false,
-  dialectOptions: {
-    ssl: process.env.NODE_ENV === 'production' ? { require: true, rejectUnauthorized: false } : false
-  }
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: './database.sqlite',
+  logging: process.env.NODE_ENV === 'development' ? console.log : false
 });
 
 const models = {
