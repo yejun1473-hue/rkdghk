@@ -8,13 +8,113 @@ function navigateTo(page) {
         return false;
     } else if (page) {
         const target = page.endsWith('.html') ? page : `${page}.html`;
-        // Only navigate if not already on the target page
         if (!window.location.href.endsWith(target)) {
             window.location.href = target;
         }
         return false;
     }
     return false;
+}
+
+// Handle all navigation buttons and links
+function setupNavigation() {
+    // Navigation buttons with data-nav attribute
+    document.querySelectorAll('[data-nav]').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = button.getAttribute('data-nav');
+            navigateTo(target);
+        });
+    });
+
+    // Login button
+    const loginButton = document.getElementById('loginButton');
+    if (loginButton) {
+        loginButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            const modal = document.getElementById('loginModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        });
+    }
+
+    // Close modal when clicking outside
+    const modal = document.getElementById('loginModal');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+    }
+
+    // Login form submission
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('usernameInput')?.value.trim();
+            const password = document.getElementById('codeInput')?.value;
+            
+            if (!username || !password) {
+                alert('사용자명과 코드를 모두 입력해주세요.');
+                return;
+            }
+            
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Store token
+                const fakeToken = `fake-jwt-token-${Date.now()}`;
+                localStorage.setItem('token', fakeToken);
+                
+                // Update UI
+                const usernameDisplay = document.getElementById('username');
+                if (usernameDisplay) {
+                    usernameDisplay.textContent = username;
+                }
+                
+                // Show success message
+                if (window.addNotification) {
+                    window.addNotification('로그인 성공!', 'success');
+                } else {
+                    alert('로그인 성공!');
+                }
+                
+                // Close modal
+                const modal = document.getElementById('loginModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+                
+                // If on login page, redirect to home
+                if (window.location.pathname.endsWith('login.html')) {
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                }
+                
+            } catch (error) {
+                console.error('Login failed:', error);
+                alert('로그인에 실패했습니다. 다시 시도해주세요.');
+            }
+        });
+    }
+}
+
+// Update active tab in navigation
+function updateActiveTab(activeTab) {
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-nav') === activeTab) {
+            btn.classList.add('active');
+        }
+    });
 }
 
 // Check authentication and handle page load

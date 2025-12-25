@@ -42,16 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
-    // Game initialization
+    // Initialize game
     window.game.init = async function() {
         try {
             console.log('Initializing game...');
-            // Add your game initialization code here
             
             // Update UI based on login state
             const token = localStorage.getItem('token');
             if (token) {
-                // If we have a token but no username, set a default
                 const usernameDisplay = document.getElementById('username');
                 if (usernameDisplay && usernameDisplay.textContent === '게스트') {
                     usernameDisplay.textContent = '사용자';
@@ -65,16 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
-    // Check if user is already logged in
-    const token = localStorage.getItem('token');
-    
-    if (token) {
-        // Initialize the game
-        window.game.init().catch(error => {
-            console.error('Failed to initialize game:', error);
-            // Don't show login modal on error to prevent loops
-        });
-    }
+    // Initialize the game
+    window.game.init().catch(error => {
+        console.error('Failed to initialize game:', error);
+    });
 });
 
 // Service worker registration for PWA
