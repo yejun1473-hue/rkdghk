@@ -54,6 +54,66 @@ router.patch('/users/:id/resources', isGM, async (req, res) => {
   }
 });
 
+// Update user currency (GM only)
+router.put('/users/:id/currency', isGM, async (req, res) => {
+  try {
+    const { gold, choco, money } = req.body;
+    const user = await User.findByPk(req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const updates = {};
+    if (gold !== undefined) updates.gold = gold;
+    if (choco !== undefined) updates.choco = choco;
+    if (money !== undefined) updates.money = money;
+
+    await user.update(updates);
+    
+    res.json({
+      id: user.id,
+      username: user.username,
+      gold: user.gold,
+      choco: user.choco,
+      money: user.money
+    });
+  } catch (error) {
+    console.error('Error updating user currency:', error);
+    res.status(500).json({ error: 'Failed to update user currency' });
+  }
+});
+
+// Give currency to all users (GM only)
+router.post('/users/give-currency', isGM, async (req, res) => {
+  try {
+    const { type, amount } = req.body;
+    
+    if (!['gold', 'choco', 'money'].includes(type)) {
+      return res.status(400).json({ error: 'Invalid currency type' });
+    }
+
+    const updateField = {};
+    updateField[type] = require('sequelize').literal(`${type} + ${amount}`);
+
+    await User.update(updateField, {
+      where: {}
+    });
+
+    const [updatedCount] = await User.update(updateField, {
+      where: {}
+    });
+
+    res.json({
+      message: `Successfully gave ${amount} ${type} to all users`,
+      updatedCount
+    });
+  } catch (error) {
+    console.error('Error giving currency to all users:', error);
+    res.status(500).json({ error: 'Failed to give currency' });
+  }
+});
+
 // Daily check-in for players
 router.post('/check-in', async (req, res) => {
   try {

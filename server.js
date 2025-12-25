@@ -2,12 +2,14 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const path = require('path');
 const { sequelize } = require('./models');
 const authRoutes = require('./routes/auth');
 const weaponRoutes = require('./routes/weapons');
 const battleRoutes = require('./routes/battles');
 const profileRoutes = require('./routes/profiles');
 const attendanceRoutes = require('./routes/attendance');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -17,12 +19,41 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
+// Authentication middleware
+const jwt = require('jsonwebtoken');
+
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'Access token required' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret', (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: 'Invalid token' });
+    }
+    req.user = user;
+    next();
+  });
+};
+
+// Serve static files from the public directory
+app.use(express.static('public'));
+
+// Handle SPA routing - serve index.html for all other GET requests
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/weapons', weaponRoutes);
 app.use('/api/battles', battleRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/attendance', attendanceRoutes);
+app.use('/api/admin', authenticateToken, adminRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

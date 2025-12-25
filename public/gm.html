@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GM Panel - Currency Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+            min-height: 100vh;
+        }
+        .gm-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+        }
+        .user-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .input-field {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+<body class="text-white">
+    <div class="gm-container">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold">GM Panel</h1>
+            <button onclick="logout()" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md">
+                Logout
+            </button>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">All Users Currency</h2>
+            <div id="usersList" class="space-y-4">
+                <!-- Users will be loaded here -->
+            </div>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Quick Actions</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button onclick="giveAllUsersGold()" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-md">
+                    Give All Users +10,000 Gold
+                </button>
+                <button onclick="giveAllUsersChoco()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-md">
+                    Give All Users +5 Choco
+                </button>
+                <button onclick="giveAllUsersMoney()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-md">
+                    Give All Users +1 Money
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let users = [];
+
+        // Check if user is GM
+        async function checkGMStatus() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const user = await response.json();
+                if (user.role !== 'gm') {
+                    alert('Access denied. GM role required.');
+                    window.location.href = '/index.html';
+                    return;
+                }
+
+                loadUsers();
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                window.location.href = '/login.html';
+            }
+        }
+
+        // Load all users
+        async function loadUsers() {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch('/api/admin/users', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    users = await response.json();
+                    displayUsers();
+                } else {
+                    alert('Failed to load users');
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                alert('Error loading users');
+            }
+        }
+
+        // Display users
+        function displayUsers() {
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = '';
+
+            users.forEach(user => {
+                const userCard = document.createElement('div');
+                userCard.className = 'user-card';
+                userCard.innerHTML = `
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h3 class="text-lg font-semibold">${user.username}</h3>
+                            <p class="text-sm text-gray-300">Role: ${user.role}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm">Gold: <span class="text-yellow-400">${user.gold?.toLocaleString() || 0}</span></p>
+                            <p class="text-sm">Choco: <span class="text-purple-400">${user.choco?.toLocaleString() || 0}</span></p>
+                            <p class="text-sm">Money: <span class="text-green-400">${user.money?.toLocaleString() || 0}</span></p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+                        <input type="number" id="gold-${user.id}" placeholder="Gold" class="px-3 py-1 rounded input-field text-sm">
+                        <input type="number" id="choco-${user.id}" placeholder="Choco" class="px-3 py-1 rounded input-field text-sm">
+                        <input type="number" id="money-${user.id}" placeholder="Money" class="px-3 py-1 rounded input-field text-sm">
+                        <button onclick="updateUserCurrency(${user.id})" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-md text-sm">
+                            Update
+                        </button>
+                    </div>
+                `;
+                usersList.appendChild(userCard);
+            });
+        }
+
+        // Update user currency
+        async function updateUserCurrency(userId) {
+            const token = localStorage.getItem('token');
+            const gold = document.getElementById(`gold-${userId}`).value;
+            const choco = document.getElementById(`choco-${userId}`).value;
+            const money = document.getElementById(`money-${userId}`).value;
+
+            const updateData = {};
+            if (gold) updateData.gold = parseInt(gold);
+            if (choco) updateData.choco = parseInt(choco);
+            if (money) updateData.money = parseInt(money);
+
+            if (Object.keys(updateData).length === 0) {
+                alert('Please enter at least one currency value');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/admin/users/${userId}/currency`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                if (response.ok) {
+                    alert('Currency updated successfully');
+                    loadUsers(); // Reload users to show updated values
+                } else {
+                    const error = await response.json();
+                    alert('Failed to update currency: ' + (error.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error updating currency:', error);
+                alert('Error updating currency');
+            }
+        }
+
+        // Quick action functions
+        async function giveAllUsersGold() {
+            await giveAllUsersCurrency('gold', 10000);
+        }
+
+        async function giveAllUsersChoco() {
+            await giveAllUsersCurrency('choco', 5);
+        }
+
+        async function giveAllUsersMoney() {
+            await giveAllUsersCurrency('money', 1);
+        }
+
+        async function giveAllUsersCurrency(type, amount) {
+            const token = localStorage.getItem('token');
+            
+            if (!confirm(`Give all users ${amount} ${type}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/users/give-currency', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ type, amount })
+                });
+
+                if (response.ok) {
+                    alert(`Successfully gave all users ${amount} ${type}`);
+                    loadUsers();
+                } else {
+                    const error = await response.json();
+                    alert('Failed to give currency: ' + (error.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error giving currency:', error);
+                alert('Error giving currency');
+            }
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/login.html';
+        }
+
+        // Initialize
+        checkGMStatus();
+    </script>
+</body>
+</html>
