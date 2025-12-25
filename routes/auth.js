@@ -12,13 +12,20 @@ const generateToken = (user) => {
   );
 };
 
-// Predefined user codes (in a real app, this would be in a database)
+// Predefined user codes from PRD
 const PREDEFINED_CODES = {
-  'GM123456': 'gm',
-  'BETA1234': 'beta_tester',
-  'PLAYER01': 'player',
-  'PLAYER02': 'player',
-  'PLAYER03': 'player'
+  // GM
+  'yj123234': 'gm',
+  
+  // Beta Testers
+  'ecfir125': 'beta_tester',
+  'dhsec394': 'beta_tester',
+  
+  // Regular Players
+  'jg283913': 'player',
+  'sj283710': 'player',
+  'jtet0928': 'player',
+  'sk228391': 'player'
 };
 
 // Login with predefined code
