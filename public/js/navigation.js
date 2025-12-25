@@ -52,23 +52,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Handle tab switching
-    document.querySelectorAll('[data-tab]').forEach(tab => {
-        tab.addEventListener('click', (e) => {
-            e.preventDefault();
-            const tabName = tab.getAttribute('data-tab');
-            const pageMap = {
-                'enhance': 'index.html',
-                'battle': 'battle.html',
-                'ranking': 'ranking.html',
-                'profile': 'profile.html',
-                'shop': 'shop.html'
-            };
-            
-            if (pageMap[tabName]) {
-                window.location.href = pageMap[tabName];
-            }
+    // Handle tab switching for both data-tab and nav-btn class
+    function setupTabNavigation(selector, getTabName) {
+        document.querySelectorAll(selector).forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tabName = getTabName(tab);
+                const pageMap = {
+                    'enhance': 'index.html',
+                    'battle': 'battle.html',
+                    'ranking': 'ranking.html',
+                    'profile': 'profile.html',
+                    'shop': 'shop.html'
+                };
+                
+                if (pageMap[tabName]) {
+                    window.location.href = pageMap[tabName];
+                }
+            });
         });
+    }
+
+    // Setup navigation for data-tab attributes
+    setupTabNavigation('[data-tab]', (tab) => tab.getAttribute('data-tab'));
+    
+    // Setup navigation for nav-btn class
+    setupTabNavigation('.nav-btn', (tab) => {
+        const icon = tab.querySelector('i.material-icons');
+        if (icon) {
+            return {
+                'enhancement': 'enhance',
+                'sports_esports': 'battle',
+                'leaderboard': 'ranking',
+                'person': 'profile',
+                'store': 'shop'
+            }[icon.textContent] || '';
+        }
+        return '';
     });
 
     // Attach click handlers to all navigation buttons
