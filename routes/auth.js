@@ -12,55 +12,47 @@ const generateToken = (user) => {
   );
 };
 
-// Register new user
-router.post('/register', async (req, res) => {
-  try {
-    const { username, personalKey } = req.body;
-    
-    // Check if username already exists
-    const existingUser = await User.findOne({ where: { username } });
-    if (existingUser) {
-      return res.status(400).json({ error: 'Username already exists' });
-    }
+// Predefined user codes (in a real app, this would be in a database)
+const PREDEFINED_CODES = {
+  'GM123456': 'gm',
+  'BETA1234': 'beta_tester',
+  'PLAYER01': 'player',
+  'PLAYER02': 'player',
+  'PLAYER03': 'player'
+};
 
-    // Create new user
-    const user = await User.create({
-      username,
-      personalKey,
-      role: 'player',
-      gold: 10000 // Starting gold
-    });
-
-    // Generate token
-    const token = generateToken(user);
-    
-    res.status(201).json({
-      id: user.id,
-      username: user.username,
-      role: user.role,
-      token
-    });
-  } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ error: 'Registration failed' });
-  }
-});
-
-// Login user
+// Login with predefined code
 router.post('/login', async (req, res) => {
   try {
-    const { username, personalKey } = req.body;
+    const { username, code } = req.body;
     
-    // Find user by username
-    const user = await User.findOne({ where: { username } });
-    if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+    if (!username || !code) {
+      return res.status(400).json({ error: 'Username and code are required' });
     }
 
-    // Verify personal key
-    const isMatch = await user.verifyPersonalKey(personalKey);
-    if (!isMatch) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+    // Check if code is valid
+    const role = PREDEFINED_CODES[code];
+    if (!role) {
+      return res.status(401).json({ error: 'Invalid code' });
+    }
+
+    // Find or create user
+    let user = await User.findOne({ where: { username } });
+    
+    if (!user) {
+      // Create new user with the code as personal key
+      user = await User.create({
+        username,
+        personalKey: code, // Store the code as personal key
+        role,
+        gold: role === 'gm' ? 1000000 : 10000 // GMs start with more gold
+      });
+    } else {
+      // Verify code matches
+      const isMatch = await user.verifyPersonalKey(code);
+      if (!isMatch) {
+        return res.status(401).json({ error: 'Invalid code for this user' });
+      }
     }
 
     // Generate token
@@ -75,6 +67,30 @@ router.post('/login', async (req, res) => {
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Login failed' });
+  }
+});
+
+// Get current user profile
+router.get('/me', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'No token provided' });
+    }
+    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
+    const user = await User.findByPk(decoded.id, {
+      attributes: { exclude: ['personalKey'] }
+    });
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json(user);
+  } catch (error) {
+    console.error('Profile error:', error);
+    res.status(500).json({ error: 'Failed to fetch profile' });
   }
 });
 

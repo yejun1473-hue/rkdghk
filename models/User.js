@@ -38,6 +38,15 @@ module.exports = (sequelize) => {
     lastCheckIn: {
       type: DataTypes.DATE,
       field: 'last_check_in'
+    },
+    checkInStreak: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      field: 'check_in_streak'
+    },
+    lastCheckInDate: {
+      type: DataTypes.DATEONLY,
+      field: 'last_check_in_date'
     }
   }, {
     tableName: 'users',
