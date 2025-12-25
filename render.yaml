@@ -1,0 +1,16 @@
+# Render configuration for static site
+services:
+  - type: web
+    name: sword-enhancement
+    env: static
+    buildCommand: echo "No build needed for static site"
+    staticPublishPath: "./public"
+    envVars:
+      - key: NODE_VERSION
+        value: 18.x
+
+# Required for static sites on Render
+static_sites:
+  - name: sword-enhancement
+    buildCommand: echo "No build needed for static site"
+    publicPath: /public
