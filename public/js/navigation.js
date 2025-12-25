@@ -5,27 +5,33 @@ function navigateTo(page) {
     if (page === 'logout') {
         localStorage.removeItem('token');
         window.location.href = 'login.html';
+        return false;
     } else if (page) {
-        window.location.href = page.endsWith('.html') ? page : `${page}.html`;
+        const target = page.endsWith('.html') ? page : `${page}.html`;
+        window.location.href = target;
+        return false;
     }
     return false;
 }
 
+// Check authentication and handle page load
 document.addEventListener('DOMContentLoaded', () => {
-    // Check authentication
     const token = localStorage.getItem('token');
-    const currentPage = window.location.pathname.split('/').pop();
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     
-    // Redirect rules:
-    // 1. If user has a token and is on login page, redirect to home
-    if (token && currentPage === 'login.html') {
-        window.location.href = 'index.html';
-        return;
-    } 
-    // 2. If user has no token and is not on login page, redirect to login
-    else if (!token && currentPage !== 'login.html' && currentPage !== '') {
-        window.location.href = 'login.html';
-        return;
+    // Authentication and redirection logic
+    if (token) {
+        // If user has token and is on login page, redirect to home
+        if (currentPage === 'login.html') {
+            window.location.href = 'index.html';
+            return;
+        }
+    } else {
+        // If no token and not on login page, redirect to login
+        if (currentPage !== 'login.html' && currentPage) {
+            window.location.href = 'login.html';
+            return;
+        }
     }
 
     // Set active tab based on current page
