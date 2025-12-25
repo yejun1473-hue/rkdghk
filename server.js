@@ -5,6 +5,9 @@ const helmet = require('helmet');
 const { sequelize } = require('./models');
 const authRoutes = require('./routes/auth');
 const weaponRoutes = require('./routes/weapons');
+const battleRoutes = require('./routes/battles');
+const profileRoutes = require('./routes/profiles');
+const attendanceRoutes = require('./routes/attendance');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -17,6 +20,9 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/weapons', weaponRoutes);
+app.use('/api/battles', battleRoutes);
+app.use('/api/profiles', profileRoutes);
+app.use('/api/attendance', attendanceRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

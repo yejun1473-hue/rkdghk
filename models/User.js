@@ -35,6 +35,38 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       defaultValue: 0
     },
+    // Battle statistics
+    battleRating: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1000,
+      field: 'battle_rating'
+    },
+    wins: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    losses: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    draws: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    // Profile fields
+    avatar: {
+      type: DataTypes.STRING(255),
+      defaultValue: 'default-avatar.png'
+    },
+    title: {
+      type: DataTypes.STRING(100),
+      defaultValue: '초보 모험가'
+    },
+    bio: {
+      type: DataTypes.TEXT,
+      defaultValue: '안녕하세요! 새로운 모험가입니다.'
+    },
+    // Attendance
     lastCheckIn: {
       type: DataTypes.DATE,
       field: 'last_check_in'
@@ -47,11 +79,42 @@ module.exports = (sequelize) => {
     lastCheckInDate: {
       type: DataTypes.DATEONLY,
       field: 'last_check_in_date'
+    },
+    // Additional stats
+    totalBattles: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      field: 'total_battles'
+    },
+    winStreak: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      field: 'win_streak'
+    },
+    maxWinStreak: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      field: 'max_win_streak'
     }
   }, {
     tableName: 'users',
     timestamps: true,
     underscored: true,
+    defaultScope: {
+      attributes: {
+        exclude: ['password', 'personalKey']
+      }
+    },
+    scopes: {
+      withSensitiveData: {
+        attributes: { include: ['personalKey'] }
+      },
+      forRanking: {
+        attributes: ['id', 'username', 'battleRating', 'wins', 'losses', 'avatar', 'title'],
+        order: [['battleRating', 'DESC']],
+        limit: 100
+      }
+    },
     hooks: {
       beforeCreate: async (user) => {
         if (user.personalKey) {

@@ -1,155 +1,255 @@
-// Weapon Names - 20 unique weapon classes, each with 20 enhancement levels
-export const WEAPON_NAMES = {
-    // Sword Classes (10)
-    SWORD: [
-        // Class 1: Rusty Sword
-        [
-            "녹슨 검 +0", "녹슨 검 +1", "녹슨 검 +2", "녹슨 검 +3", "녹슨 검 +4",
-            "녹슨 검 +5", "녹슨 검 +6", "녹슨 검 +7", "녹슨 검 +8", "녹슨 검 +9",
-            "녹슨 검 +10", "녹슨 검 +11", "녹슨 검 +12", "녹슨 검 +13", "녹슨 검 +14",
-            "녹슨 검 +15", "녹슨 검 +16", "녹슨 검 +17", "녹슨 검 +18", "녹슨 검 +19"
-        ],
-        // Class 2: Steel Sword
-        [
-            "강철 검 +0", "강철 검 +1", "강철 검 +2", "강철 검 +3", "강철 검 +4",
-            "강철 검 +5", "강철 검 +6", "강철 검 +7", "강철 검 +8", "강철 검 +9",
-            "강철 검 +10", "강철 검 +11", "강철 검 +12", "강철 검 +13", "강철 검 +14",
-            "강철 검 +15", "강철 검 +16", "강철 검 +17", "강철 검 +18", "강철 검 +19"
-        ],
-        // Class 3: Magic Sword
-        [
-            "마법의 검 +0", "마법의 검 +1", "마법의 검 +2", "마법의 검 +3", "마법의 검 +4",
-            "마법의 검 +5", "마법의 검 +6", "마법의 검 +7", "마법의 검 +8", "마법의 검 +9",
-            "마법의 검 +10", "마법의 검 +11", "마법의 검 +12", "마법의 검 +13", "마법의 검 +14",
-            "마법의 검 +15", "마법의 검 +16", "마법의 검 +17", "마법의 검 +18", "마법의 검 +19"
-        ],
-        // Class 4: Holy Sword
-        [
-            "성검 +0", "성검 +1", "성검 +2", "성검 +3", "성검 +4",
-            "성검 +5", "성검 +6", "성검 +7", "성검 +8", "성검 +9",
-            "성검 +10", "성검 +11", "성검 +12", "성검 +13", "성검 +14",
-            "성검 +15", "성검 +16", "성검 +17", "성검 +18", "성검 +19"
-        ],
-        // Class 5: Dragon Slayer
-        [
-            "드래곤 슬레이어 +0", "드래곤 슬레이어 +1", "드래곤 슬레이어 +2", "드래곤 슬레이어 +3", "드래곤 슬레이어 +4",
-            "드래곤 슬레이어 +5", "드래곤 슬레이어 +6", "드래곤 슬레이어 +7", "드래곤 슬레이어 +8", "드래곤 슬레이어 +9",
-            "드래곤 슬레이어 +10", "드래곤 슬레이어 +11", "드래곤 슬레이어 +12", "드래곤 슬레이어 +13", "드래곤 슬레이어 +14",
-            "드래곤 슬레이어 +15", "드래곤 슬레이어 +16", "드래곤 슬레이어 +17", "드래곤 슬레이어 +18", "드래곤 슬레이어 +19"
-        ],
-        // Class 6: Demon Sword
-        [
-            "마검 +0", "마검 +1", "마검 +2", "마검 +3", "마검 +4",
-            "마검 +5", "마검 +6", "마검 +7", "마검 +8", "마검 +9",
-            "마검 +10", "마검 +11", "마검 +12", "마검 +13", "마검 +14",
-            "마검 +15", "마검 +16", "마검 +17", "마검 +18", "마검 +19"
-        ],
-        // Class 7: Elemental Sword
-        [
-            "원소의 검 +0", "원소의 검 +1", "원소의 검 +2", "원소의 검 +3", "원소의 검 +4",
-            "원소의 검 +5", "원소의 검 +6", "원소의 검 +7", "원소의 검 +8", "원소의 검 +9",
-            "원소의 검 +10", "원소의 검 +11", "원소의 검 +12", "원소의 검 +13", "원소의 검 +14",
-            "원소의 검 +15", "원소의 검 +16", "원소의 검 +17", "원소의 검 +18", "원소의 검 +19"
-        ],
-        // Class 8: Legendary Sword
-        [
-            "전설의 검 +0", "전설의 검 +1", "전설의 검 +2", "전설의 검 +3", "전설의 검 +4",
-            "전설의 검 +5", "전설의 검 +6", "전설의 검 +7", "전설의 검 +8", "전설의 검 +9",
-            "전설의 검 +10", "전설의 검 +11", "전설의 검 +12", "전설의 검 +13", "전설의 검 +14",
-            "전설의 검 +15", "전설의 검 +16", "전설의 검 +17", "전설의 검 +18", "전설의 검 +19"
-        ],
-        // Class 9: Celestial Sword
-        [
-            "천공의 검 +0", "천공의 검 +1", "천공의 검 +2", "천공의 검 +3", "천공의 검 +4",
-            "천공의 검 +5", "천공의 검 +6", "천공의 검 +7", "천공의 검 +8", "천공의 검 +9",
-            "천공의 검 +10", "천공의 검 +11", "천공의 검 +12", "천공의 검 +13", "천공의 검 +14",
-            "천공의 검 +15", "천공의 검 +16", "천공의 검 +17", "천공의 검 +18", "천공의 검 +19"
-        ],
-        // Class 10: Void Sword
-        [
-            "공허의 검 +0", "공허의 검 +1", "공허의 검 +2", "공허의 검 +3", "공허의 검 +4",
-            "공허의 검 +5", "공허의 검 +6", "공허의 검 +7", "공허의 검 +8", "공허의 검 +9",
-            "공허의 검 +10", "공허의 검 +11", "공허의 검 +12", "공허의 검 +13", "공허의 검 +14",
-            "공허의 검 +15", "공허의 검 +16", "공허의 검 +17", "공허의 검 +18", "공허의 검 +19"
-        ]
-    ],
-    
-    // Stick Classes (10)
-    STICK: [
-        // Class 1: Wooden Stick
-        [
-            "나무 막대기 +0", "나무 막대기 +1", "나무 막대기 +2", "나무 막대기 +3", "나무 막대기 +4",
-            "나무 막대기 +5", "나무 막대기 +6", "나무 막대기 +7", "나무 막대기 +8", "나무 막대기 +9",
-            "나무 막대기 +10", "나무 막대기 +11", "나무 막대기 +12", "나무 막대기 +13", "나무 막대기 +14",
-            "나무 막대기 +15", "나무 막대기 +16", "나무 막대기 +17", "나무 막대기 +18", "나무 막대기 +19"
-        ],
-        // Class 2: Magic Staff
-        [
-            "마법 지팡이 +0", "마법 지팡이 +1", "마법 지팡이 +2", "마법 지팡이 +3", "마법 지팡이 +4",
-            "마법 지팡이 +5", "마법 지팡이 +6", "마법 지팡이 +7", "마법 지팡이 +8", "마법 지팡이 +9",
-            "마법 지팡이 +10", "마법 지팡이 +11", "마법 지팡이 +12", "마법 지팡이 +13", "마법 지팡이 +14",
-            "마법 지팡이 +15", "마법 지팡이 +16", "마법 지팡이 +17", "마법 지팡이 +18", "마법 지팡이 +19"
-        ],
-        // Class 3: Elemental Staff
-        [
-            "원소의 지팡이 +0", "원소의 지팡이 +1", "원소의 지팡이 +2", "원소의 지팡이 +3", "원소의 지팡이 +4",
-            "원소의 지팡이 +5", "원소의 지팡이 +6", "원소의 지팡이 +7", "원소의 지팡이 +8", "원소의 지팡이 +9",
-            "원소의 지팡이 +10", "원소의 지팡이 +11", "원소의 지팡이 +12", "원소의 지팡이 +13", "원소의 지팡이 +14",
-            "원소의 지팡이 +15", "원소의 지팡이 +16", "원소의 지팡이 +17", "원소의 지팡이 +18", "원소의 지팡이 +19"
-        ],
-        // Class 4: Holy Staff
-        [
-            "성스러운 지팡이 +0", "성스러운 지팡이 +1", "성스러운 지팡이 +2", "성스러운 지팡이 +3", "성스러운 지팡이 +4",
-            "성스러운 지팡이 +5", "성스러운 지팡이 +6", "성스러운 지팡이 +7", "성스러운 지팡이 +8", "성스러운 지팡이 +9",
-            "성스러운 지팡이 +10", "성스러운 지팡이 +11", "성스러운 지팡이 +12", "성스러운 지팡이 +13", "성스러운 지팡이 +14",
-            "성스러운 지팡이 +15", "성스러운 지팡이 +16", "성스러운 지팡이 +17", "성스러운 지팡이 +18", "성스러운 지팡이 +19"
-        ],
-        // Class 5: Dragon Staff
-        [
-            "용의 지팡이 +0", "용의 지팡이 +1", "용의 지팡이 +2", "용의 지팡이 +3", "용의 지팡이 +4",
-            "용의 지팡이 +5", "용의 지팡이 +6", "용의 지팡이 +7", "용의 지팡이 +8", "용의 지팡이 +9",
-            "용의 지팡이 +10", "용의 지팡이 +11", "용의 지팡이 +12", "용의 지팡이 +13", "용의 지팡이 +14",
-            "용의 지팡이 +15", "용의 지팡이 +16", "용의 지팡이 +17", "용의 지팡이 +18", "용의 지팡이 +19"
-        ],
-        // Class 6: Demon Staff
-        [
-            "악마의 지팡이 +0", "악마의 지팡이 +1", "악마의 지팡이 +2", "악마의 지팡이 +3", "악마의 지팡이 +4",
-            "악마의 지팡이 +5", "악마의 지팡이 +6", "악마의 지팡이 +7", "악마의 지팡이 +8", "악마의 지팡이 +9",
-            "악마의 지팡이 +10", "악마의 지팡이 +11", "악마의 지팡이 +12", "악마의 지팡이 +13", "악마의 지팡이 +14",
-            "악마의 지팡이 +15", "악마의 지팡이 +16", "악마의 지팡이 +17", "악마의 지팡이 +18", "악마의 지팡이 +19"
-        ],
-        // Class 7: Celestial Staff
-        [
-            "천공의 지팡이 +0", "천공의 지팡이 +1", "천공의 지팡이 +2", "천공의 지팡이 +3", "천공의 지팡이 +4",
-            "천공의 지팡이 +5", "천공의 지팡이 +6", "천공의 지팡이 +7", "천공의 지팡이 +8", "천공의 지팡이 +9",
-            "천공의 지팡이 +10", "천공의 지팡이 +11", "천공의 지팡이 +12", "천공의 지팡이 +13", "천공의 지팡이 +14",
-            "천공의 지팡이 +15", "천공의 지팡이 +16", "천공의 지팡이 +17", "천공의 지팡이 +18", "천공의 지팡이 +19"
-        ],
-        // Class 8: Arcane Staff
-        [
-            "비전의 지팡이 +0", "비전의 지팡이 +1", "비전의 지팡이 +2", "비전의 지팡이 +3", "비전의 지팡이 +4",
-            "비전의 지팡이 +5", "비전의 지팡이 +6", "비전의 지팡이 +7", "비전의 지팡이 +8", "비전의 지팡이 +9",
-            "비전의 지팡이 +10", "비전의 지팡이 +11", "비전의 지팡이 +12", "비전의 지팡이 +13", "비전의 지팡이 +14",
-            "비전의 지팡이 +15", "비전의 지팡이 +16", "비전의 지팡이 +17", "비전의 지팡이 +18", "비전의 지팡이 +19"
-        ],
-        // Class 9: Nature Staff
-        [
-            "자연의 지팡이 +0", "자연의 지팡이 +1", "자연의 지팡이 +2", "자연의 지팡이 +3", "자연의 지팡이 +4",
-            "자연의 지팡이 +5", "자연의 지팡이 +6", "자연의 지팡이 +7", "자연의 지팡이 +8", "자연의 지팡이 +9",
-            "자연의 지팡이 +10", "자연의 지팡이 +11", "자연의 지팡이 +12", "자연의 지팡이 +13", "자연의 지팡이 +14",
-            "자연의 지팡이 +15", "자연의 지팡이 +16", "자연의 지팡이 +17", "자연의 지팡이 +18", "자연의 지팡이 +19"
-        ],
-        // Class 10: Void Staff
-        [
-            "공허의 지팡이 +0", "공허의 지팡이 +1", "공허의 지팡이 +2", "공허의 지팡이 +3", "공허의 지팡이 +4",
-            "공허의 지팡이 +5", "공허의 지팡이 +6", "공허의 지팡이 +7", "공허의 지팡이 +8", "공허의 지팡이 +9",
-            "공허의 지팡이 +10", "공허의 지팡이 +11", "공허의 지팡이 +12", "공허의 지팡이 +13", "공허의 지팡이 +14",
-            "공허의 지팡이 +15", "공허의 지팡이 +16", "공허의 지팡이 +17", "공허의 지팡이 +18", "공허의 지팡이 +19"
-        ]
-    ]
+// Weapon Tiers
+const WEAPON_TIERS = [
+    '낡은', '일반', '고급', '희귀', '영웅', '전설', '신화', '태초', '천공', '공허'
+];
+
+// Weapon Types
+const WEAPON_TYPES = {
+    SWORD: '검',
+    STICK: '지팡이',
+    DAGGER: '단검',
+    BOW: '활',
+    STAFF: '스태프',
+    WAND: '완드'
 };
 
-export const WEAPON_TYPES = {
-    SWORD: 'SWORD',
-    STICK: 'STICK'
+// Generate weapon names for a specific type and tier
+const generateWeaponNames = (type, tier) => {
+    const prefix = WEAPON_TIERS[tier];
+    const suffix = WEAPON_TYPES[type] || type;
+    return Array.from({ length: 21 }, (_, i) => `${prefix} ${suffix} +${i}`);
+};
+
+// Generate all weapon names
+export const WEAPON_NAMES = {
+    SWORD: generateWeaponNames('SWORD', 0), // Default tier 0
+    STICK: generateWeaponNames('STICK', 0), // Default tier 0
+    
+    // Generate all tiers for each weapon type
+    ...Object.entries(WEAPON_TYPES).reduce((acc, [typeKey, typeName]) => {
+        WEAPON_TIERS.forEach((tier, index) => {
+            const tierKey = `${typeKey}_TIER_${index}`;
+            acc[tierKey] = generateWeaponNames(typeKey, index);
+        });
+        return acc;
+    }, {})
+};
+
+// Special weapon sets
+export const SPECIAL_WEAPONS = {
+    // Christmas event weapons
+    CHRISTMAS: {
+        SWORD: '크리스마스 검',
+        STAFF: '산타의 지팡이',
+        BOW: '루돌프의 활'
+    },
+    
+    // Halloween event weapons
+    HALLOWEEN: {
+        SWORD: '호박 대검',
+        WAND: '유령의 지팡이',
+        DAGGER: '흡혈귀 송곳니'
+    },
+    
+    // Summer event weapons
+    SUMMER: {
+        SWORD: '해변의 낫',
+        STAFF: '파도의 지팡이',
+        BOW: '태양의 활'
+    }
+};
+
+// Hidden weapons that can be unlocked
+// Format: { slug: { name: 'Display Name', condition: 'Condition to unlock', stats: { attack: number, magic: number } } }
+export const HIDDEN_WEAPONS = {
+    'bone': { 
+        name: '제작자의 유골', 
+        condition: '누적 파괴 10회',
+        stats: { attack: 50, magic: 50 } 
+    },
+    'xmas_sword': { 
+        name: '크리스마스 검', 
+        condition: '12월 이벤트',
+        stats: { attack: 100, magic: 30 }
+    },
+    'gingerbread': { 
+        name: '진저브레드', 
+        condition: '이벤트 보상',
+        stats: { attack: 30, magic: 20 }
+    },
+    'flower_bouquet': { 
+        name: '금방 시들 것 같은 할인 꽃다발', 
+        condition: '이벤트 보상',
+        stats: { attack: 10, magic: 40 }
+    },
+    'lightsaber': { 
+        name: '작은 광선검', 
+        condition: '특별 이벤트',
+        stats: { attack: 150, magic: 50 }
+    },
+    'sausage': { 
+        name: '빵에 낀 의문의 소시지', 
+        condition: '히든 퀘스트',
+        stats: { attack: 200, magic: 0 }
+    },
+    'eternal_ice': {
+        name: '영원한 빙결',
+        condition: '겨울 이벤트 보스 처치',
+        stats: { attack: 80, magic: 120 }
+    },
+    'phoenix_feather': {
+        name: '불사조의 깃털',
+        condition: '부활 50회 달성',
+        stats: { attack: 70, magic: 130 }
+    }
+};
+
+// Weapon upgrade system
+export const UPGRADE_SYSTEM = {
+    // Success rates for each enhancement level (0-20)
+    SUCCESS_RATES: [
+        100, 95, 90, 85, 80,  // 0-4
+        75, 70, 65, 60, 55,   // 5-9
+        45, 40, 35, 30, 25,   // 10-14
+        15, 10, 5, 3, 1, 0.5  // 15-19 (20 is max)
+    ],
+    
+    // Downgrade rates (chance to go down 1 level on failure)
+    DOWNGRADE_RATE: 50, // 50% chance to go down 1 level on failure
+    
+    // Break chance (chance to break the weapon completely on failure after +10)
+    BREAK_RATES: [
+        0, 0, 0, 0, 0,   // 0-4
+        0, 0, 0, 0, 0,   // 5-9
+        5, 10, 15, 20, 25, // 10-14
+        30, 40, 50, 75, 90 // 15-19
+    ],
+    
+    // Protection items that can be used
+    PROTECTION_ITEMS: {
+        'protection_scroll': {
+            name: '보호 주문서',
+            effect: 'Prevents weapon from breaking on failure',
+            successRate: 100
+        },
+        'blessed_scroll': {
+            name: '축복의 주문서',
+            effect: 'Increases success rate by 15%',
+            successRate: 15
+        },
+        'miracle_scroll': {
+            name: '기적의 주문서',
+            effect: 'Guarantees success for the next upgrade',
+            successRate: 100
+        }
+    },
+    
+    // Get the success rate for a specific enhancement level
+    getSuccessRate: function(level) {
+        return this.SUCCESS_RATES[level] || 0;
+    },
+    
+    // Get the break rate for a specific enhancement level
+    getBreakRate: function(level) {
+        return this.BREAK_RATES[level] || 0;
+    },
+    
+    // Calculate the stats bonus based on enhancement level
+    calculateStatsBonus: function(baseStats, level) {
+        const multiplier = 1 + (level * 0.1); // 10% increase per level
+        return {
+            attack: Math.floor(baseStats.attack * multiplier),
+            magic: Math.floor(baseStats.magic * multiplier)
+        };
+    }
+};
+
+// Export weapon types as separate constant
+export { WEAPON_TYPES };
+
+// Utility functions
+export const WeaponUtils = {
+    // Get a random weapon name by type
+    getRandomWeapon: (type = null) => {
+        const types = type ? [type] : Object.keys(WEAPON_NAMES);
+        const selectedType = types[Math.floor(Math.random() * types.length)];
+        const weapons = WEAPON_NAMES[selectedType];
+        return {
+            type: selectedType,
+            name: weapons[Math.floor(Math.random() * weapons.length)],
+            level: 0,
+            stats: { attack: 10, magic: 5 } // Base stats
+        };
+    },
+    
+    // Get weapon stats by name and enhancement level
+    getWeaponStats: (weaponName, enhancementLevel = 0) => {
+        // This is a simplified example - in a real game, you'd have a more sophisticated system
+        const baseAttack = 10 + (Math.random() * 20);
+        const baseMagic = 5 + (Math.random() * 10);
+        const multiplier = 1 + (enhancementLevel * 0.15); // 15% increase per level
+        
+        return {
+            attack: Math.floor(baseAttack * multiplier),
+            magic: Math.floor(baseMagic * multiplier),
+            critical: 5 + (enhancementLevel * 0.5), // 0.5% crit per level
+            attackSpeed: 1.0 - (enhancementLevel * 0.01) // Slight attack speed increase
+        };
+    },
+    
+    // Check if a weapon can be enhanced further
+    canEnhance: (weapon) => {
+        if (!weapon) return false;
+        const maxLevel = 20; // Maximum enhancement level
+        return (weapon.level || 0) < maxLevel;
+    },
+    
+    // Simulate weapon enhancement
+    enhanceWeapon: (weapon, useProtection = false) => {
+        if (!WeaponUtils.canEnhance(weapon)) {
+            return {
+                success: false,
+                message: 'Cannot enhance further',
+                weapon: { ...weapon }
+            };
+        }
+        
+        const currentLevel = weapon.level || 0;
+        const successRate = UPGRADE_SYSTEM.getSuccessRate(currentLevel);
+        const breakRate = UPGRADE_SYSTEM.getBreakRate(currentLevel);
+        const isSuccess = Math.random() * 100 < successRate;
+        
+        let result = { ...weapon };
+        let message = '';
+        
+        if (isSuccess) {
+            result.level = currentLevel + 1;
+            message = `Enhancement to +${result.level} succeeded!`;
+        } else {
+            // Check if weapon breaks
+            const willBreak = !useProtection && (Math.random() * 100 < breakRate);
+            
+            if (willBreak) {
+                message = 'Enhancement failed! The weapon has been destroyed.';
+                result = null; // Weapon is destroyed
+            } else {
+                // Check for downgrade
+                const willDowngrade = currentLevel > 0 && (Math.random() * 100 < UPGRADE_SYSTEM.DOWNGRADE_RATE);
+                
+                if (willDowngrade) {
+                    result.level = currentLevel - 1;
+                    message = `Enhancement failed! Weapon downgraded to +${result.level}.`;
+                } else {
+                    message = 'Enhancement failed, but no downgrade occurred.';
+                }
+            }
+        }
+        
+        return {
+            success: isSuccess,
+            message,
+            weapon: result,
+            isDestroyed: result === null
+        };
+    }
 };
