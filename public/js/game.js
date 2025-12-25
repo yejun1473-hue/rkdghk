@@ -342,7 +342,7 @@ function setupEventListeners() {
     // Login button
     elements.loginBtn.onclick = async () => {
         const username = elements.usernameInput.value.trim();
-        const personalKey = elements.personalKeyInput.value.trim();
+        const personalKey = elements.personalKey.value.trim();
         
         if (!username || !personalKey) {
             alert('사용자명과 개인키를 모두 입력해주세요.');
@@ -350,10 +350,15 @@ function setupEventListeners() {
         }
         
         try {
-            await api.login(username, personalKey);
-            hideLoginModal();
-            initGame();
+            const response = await api.login(username, personalKey);
+            if (response && response.token) {
+                hideLoginModal();
+                initGame();
+            } else {
+                throw new Error('로그인 응답이 올바르지 않습니다.');
+            }
         } catch (error) {
+            console.error('Login error:', error);
             alert('로그인에 실패했습니다: ' + (error.message || '알 수 없는 오류'));
         }
     };
