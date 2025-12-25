@@ -8,7 +8,10 @@ function navigateTo(page) {
         return false;
     } else if (page) {
         const target = page.endsWith('.html') ? page : `${page}.html`;
-        window.location.href = target;
+        // Only navigate if not already on the target page
+        if (!window.location.href.endsWith(target)) {
+            window.location.href = target;
+        }
         return false;
     }
     return false;
@@ -19,19 +22,71 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     
-    // Authentication and redirection logic
-    if (token) {
-        // If user has token and is on login page, redirect to home
-        if (currentPage === 'login.html') {
-            window.location.href = 'index.html';
-            return;
-        }
-    } else {
-        // If no token and not on login page, redirect to login
-        if (currentPage !== 'login.html' && currentPage) {
-            window.location.href = 'login.html';
-            return;
-        }
+    // If we're on login page and have a token, go to home
+    if (token && currentPage === 'login.html') {
+        window.location.href = 'index.html';
+        return;
+    }
+    
+    // If no token and not on login page, go to login
+    if (!token && currentPage !== 'login.html') {
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    // Initialize login form if it exists
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('usernameInput')?.value.trim();
+            const password = document.getElementById('codeInput')?.value;
+            
+            if (!username || !password) {
+                alert('사용자명과 코드를 모두 입력해주세요.');
+                return;
+            }
+            
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Store token
+                const fakeToken = `fake-jwt-token-${Date.now()}`;
+                localStorage.setItem('token', fakeToken);
+                
+                // Update UI
+                const usernameDisplay = document.getElementById('username');
+                if (usernameDisplay) {
+                    usernameDisplay.textContent = username;
+                }
+                
+                // Show success message
+                if (window.addNotification) {
+                    window.addNotification('로그인 성공!', 'success');
+                } else {
+                    alert('로그인 성공!');
+                }
+                
+                // Close modal if it's open
+                const modal = document.getElementById('loginModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+                
+                // If on login page, redirect to home after a short delay
+                if (window.location.pathname.endsWith('login.html')) {
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                }
+                
+            } catch (error) {
+                console.error('Login failed:', error);
+                alert('로그인에 실패했습니다. 다시 시도해주세요.');
+            }
+        });
     }
 
     // Set active tab based on current page

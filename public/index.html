@@ -103,8 +103,8 @@
 
     <script src="js/api.js"></script>
     <script src="js/navigation.js"></script>
-    <script src="js/game.js"></script>
     <script src="js/app.js"></script>
+    <!-- game.js is now imported as a module in app.js -->
     <style>
         /* Notification styles */
         .notification {
@@ -134,6 +134,11 @@
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; transform: translateY(-20px); }
         }
     </style>
 </body>

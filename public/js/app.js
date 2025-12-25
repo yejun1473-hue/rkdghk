@@ -1,3 +1,22 @@
+// Global notification function
+window.addNotification = function(message, type = 'info') {
+    console.log(`[${type}] ${message}`);
+    
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    
+    // Add to the page
+    document.body.appendChild(notification);
+    
+    // Auto-remove after delay
+    setTimeout(() => {
+        notification.style.animation = 'fadeOut 0.5s forwards';
+        setTimeout(() => notification.remove(), 500);
+    }, 3000);
+};
+
 // Main application entry point
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded');
@@ -5,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize the game object if it doesn't exist
     window.game = window.game || {};
     
-    // Add showLoginModal method if it doesn't exist
+    // Show login modal function
     window.game.showLoginModal = function() {
         const modal = document.getElementById('loginModal');
         if (modal) {
@@ -14,11 +33,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
-    // Add init method if it doesn't exist
+    // Hide login modal function
+    window.game.hideLoginModal = function() {
+        const modal = document.getElementById('loginModal');
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    };
+    
+    // Game initialization
     window.game.init = async function() {
         try {
             console.log('Initializing game...');
             // Add your game initialization code here
+            
+            // Update UI based on login state
+            const token = localStorage.getItem('token');
+            if (token) {
+                // If we have a token but no username, set a default
+                const usernameDisplay = document.getElementById('username');
+                if (usernameDisplay && usernameDisplay.textContent === '게스트') {
+                    usernameDisplay.textContent = '사용자';
+                }
+            }
+            
             return Promise.resolve();
         } catch (error) {
             console.error('Game initialization error:', error);
@@ -33,27 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Initialize the game
         window.game.init().catch(error => {
             console.error('Failed to initialize game:', error);
-            window.game.showLoginModal();
+            // Don't show login modal on error to prevent loops
         });
-    } else {
-        // Show login modal if not logged in
-        window.game.showLoginModal();
-    }
-    
-    // Add notification function if it doesn't exist
-    if (!window.addNotification) {
-        window.addNotification = function(message, type = 'info') {
-            console.log(`[${type}] ${message}`);
-            // You can add a proper notification UI here
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
-        };
     }
 });
 
