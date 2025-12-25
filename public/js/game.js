@@ -1,13 +1,18 @@
+import { WEAPON_NAMES, WEAPON_TYPES } from './weaponNames.js';
+
 // Game State
 const gameState = {
     user: null,
     weapons: [],
     selectedWeapon: null,
-    notifications: []
+    notifications: [],
+    currentWeaponType: WEAPON_TYPES.SWORD // Default to sword type
 };
 
 // DOM Elements
 const elements = {
+    // Weapon Type Toggle
+    toggleWeaponTypeBtn: document.getElementById('toggleWeaponType'),
     // User Info
     username: document.getElementById('username'),
     gold: document.getElementById('gold'),
@@ -40,8 +45,9 @@ const elements = {
     
     // Modal
     loginModal: document.getElementById('loginModal'),
+    loginForm: document.getElementById('loginForm'),
     usernameInput: document.getElementById('usernameInput'),
-    codeInput: document.getElementById('code'),
+    codeInput: document.getElementById('codeInput'),
     loginBtn: document.getElementById('loginBtn')
 };
 
@@ -96,36 +102,20 @@ function updateWeaponUI(weapon) {
         elements.weaponLevel.textContent = '+0';
         elements.weaponAttack.textContent = '0';
         elements.weaponPrice.textContent = '0';
-        elements.enhanceBtn.disabled = true;
-        elements.sellBtn.disabled = true;
         return;
     }
-
-    const stats = calculateWeaponStats(weapon);
-    const rates = ENHANCEMENT_RATES[weapon.level] || { success: 0, maintain: 0, destroy: 0, cost: 0 };
     
     elements.weaponName.textContent = weapon.name;
-    elements.weaponLevel.textContent = `+${weapon.level}`;
-    elements.weaponAttack.textContent = stats.attack;
-    elements.weaponPrice.textContent = stats.price.toLocaleString();
+    elements.weaponLevel.textContent = weapon.level > 0 ? `+${weapon.level}` : '';
+    elements.weaponAttack.textContent = weapon.attack;
+    elements.weaponPrice.textContent = Math.floor(weapon.attack * 10);
     
-    // Update enhancement info
+    // Update enhancement rates
+    const rates = ENHANCEMENT_RATES[weapon.level] || ENHANCEMENT_RATES[18];
     elements.successRate.textContent = `${rates.success}%`;
     elements.maintainRate.textContent = `${rates.maintain}%`;
     elements.destroyRate.textContent = `${rates.destroy}%`;
-    elements.enhanceCost.textContent = rates.cost.toLocaleString();
-    
-    // Update weapon image based on level
-    const weaponImage = `images/weapons/${weapon.isHidden ? 'hidden' : 'sword'}_${Math.min(weapon.level, 20)}.png`;
-    elements.currentWeaponImg.src = weaponImage;
-    elements.currentWeaponImg.alt = weapon.name;
-    
-    // Enable/disable buttons
-    elements.enhanceBtn.disabled = false;
-    elements.sellBtn.disabled = false;
-    
-    // Update selected state in inventory
-    updateInventoryUI();
+    elements.enhanceCost.textContent = rates.cost;
 }
 
 // Update inventory UI
@@ -150,7 +140,6 @@ function updateInventoryUI() {
         
         weaponElement.className = `inventory-item ${isSelected ? 'selected' : ''}`;
         weaponElement.innerHTML = `
-            <img src="images/weapons/${weapon.isHidden ? 'hidden' : 'sword'}_${Math.min(weapon.level, 20)}.png" alt="${weapon.name}">
             <span class="item-level">+${weapon.level}</span>
             <span class="item-name">${weapon.name}</span>
         `;
@@ -189,61 +178,74 @@ function selectWeapon(weapon) {
 }
 
 // Create new weapon
-async function createNewWeapon() {
-    try {
-        const weapon = await api.createWeapon('기본 검');
-        gameState.weapons.push(weapon);
-        selectWeapon(weapon);
-        updateInventoryUI();
-        addNotification('새 무기를 획득했습니다!', 'success');
-    } catch (error) {
-        console.error('Failed to create weapon:', error);
-        addNotification('무기 생성에 실패했습니다.', 'danger');
-    }
+function createNewWeapon() {
+    const newWeapon = {
+        id: Date.now(),
+        name: WEAPON_NAMES[gameState.currentWeaponType][0],
+        level: 0,
+        attack: 10,
+        price: 0,
+        type: gameState.currentWeaponType
+    };
+    
+    gameState.weapons.push(newWeapon);
+    gameState.selectedWeapon = newWeapon;
+    updateWeaponUI(newWeapon);
+    updateInventoryUI();
 }
 
 // Enhance weapon
-async function enhanceWeapon() {
+function enhanceWeapon() {
     if (!gameState.selectedWeapon) return;
     
+    const weapon = gameState.selectedWeapon;
+    const rates = ENHANCEMENT_RATES[weapon.level] || ENHANCEMENT_RATES[18];
+    
     try {
-        const result = await api.enhanceWeapon(gameState.selectedWeapon.id);
-        
-        // Update weapon data
-        const weaponIndex = gameState.weapons.findIndex(w => w.id === result.weapon.id);
-        if (weaponIndex !== -1) {
-            gameState.weapons[weaponIndex] = result.weapon;
-            gameState.selectedWeapon = result.weapon;
+        // Check if user has enough gold
+        if (gameState.user.gold < rates.cost) {
+            addNotification('골드가 부족합니다!', 'error');
+            return;
         }
         
-        // Update user data
-        if (result.user) {
-            gameState.user = result.user;
-            updateUserUI(gameState.user);
-        }
+        // Deduct gold
+        gameState.user.gold -= rates.cost;
+        updateUserUI(gameState.user);
         
-        // Update UI
-        updateWeaponUI(result.weapon);
-        updateInventoryUI();
+        // Calculate result
+        const result = Math.random() * 100;
         
-        // Show result message
-        let message = '';
-        if (result.result === 'success') {
-            message = `성공! ${result.weapon.name}이(가) +${result.weapon.level}강이 되었습니다!`;
-            elements.weaponImage.classList.add('pulse');
-            setTimeout(() => elements.weaponImage.classList.remove('pulse'), 1000);
-        } else if (result.result === 'maintain') {
-            message = '강화는 실패했지만 무기는 무사합니다.';
-            elements.weaponImage.classList.add('shake');
-            setTimeout(() => elements.weaponImage.classList.remove('shake'), 300);
+        if (result <= rates.success) {
+            // Success
+            weapon.level++;
+            weapon.attack = Math.floor(weapon.attack * 1.5);
+            weapon.name = WEAPON_NAMES[weapon.type][Math.min(weapon.level, WEAPON_NAMES[weapon.type].length - 1)];
+            message = `강화 성공! ${weapon.name} +${weapon.level}이 되었습니다.`;
+            updateWeaponUI(weapon);
+            addNotification(message, 'success');
+        } else if (result <= rates.success + rates.maintain) {
+            // Maintain
+            message = '강화는 실패했지만, 무기가 유지되었습니다.';
+            addNotification(message, 'warning');
         } else {
-            message = '무기가 파괴되었습니다...';
-            elements.weaponImage.classList.add('shake');
-            setTimeout(() => elements.weaponImage.classList.remove('shake'), 300);
+            // Destroy
+            message = '강화에 실패하여 무기가 파괴되었습니다.';
+            addNotification(message, 'error');
+            const index = gameState.weapons.indexOf(weapon);
+            gameState.weapons.splice(index, 1);
+            gameState.selectedWeapon = gameState.weapons[0] || null;
+            if (gameState.selectedWeapon) {
+                updateWeaponUI(gameState.selectedWeapon);
+            } else {
+                // Reset weapon display
+                elements.weaponName.textContent = '무기가 없습니다';
+                elements.weaponLevel.textContent = '';
+                elements.weaponAttack.textContent = '0';
+                elements.weaponPrice.textContent = '0';
+            }
         }
         
-        addNotification(message, result.result === 'success' ? 'success' : 'danger');
-        
+        updateInventoryUI();
     } catch (error) {
         console.error('Enhancement failed:', error);
         addNotification('강화에 실패했습니다: ' + (error.message || '알 수 없는 오류'), 'danger');
@@ -302,16 +304,19 @@ async function initGame() {
             gameState.selectedWeapon = weapons[0];
             updateWeaponUI(gameState.selectedWeapon);
         } else {
-            updateWeaponUI(null);
+            // Create a default weapon if none exist
+            createNewWeapon();
         }
         
         // Set up event listeners
         setupEventListeners();
         
         // Connect to notifications
-        api.connectToNotifications(notification => {
-            addNotification(notification.message, 'info');
-        });
+        if (api.connectToNotifications) {
+            api.connectToNotifications(notification => {
+                addNotification(notification.message, 'info');
+            });
+        }
         
     } catch (error) {
         console.error('Failed to initialize game:', error);
@@ -330,61 +335,122 @@ function hideLoginModal() {
     elements.loginModal.style.display = 'none';
 }
 
+// Handle login form submission
+async function handleLogin(event) {
+    event.preventDefault(); // Prevent default form submission
+    
+    const username = elements.usernameInput.value.trim();
+    const code = elements.codeInput.value.trim();
+    
+    if (!username || !code) {
+        alert('사용자명과 코드를 모두 입력해주세요.');
+        return;
+    }
+    
+    // Show loading state
+    const loginBtnText = elements.loginBtn.innerHTML;
+    elements.loginBtn.disabled = true;
+    elements.loginBtn.innerHTML = '로그인 중...';
+    
+    try {
+        const response = await api.login(username, code);
+        
+        if (response && response.token) {
+            // Store user data
+            localStorage.setItem('user', JSON.stringify({
+                username: response.username || username,
+                role: response.role || 'player',
+                token: response.token
+            }));
+            
+            // Update UI
+            if (elements.username) {
+                elements.username.textContent = response.username || username;
+            }
+            
+            // Clear input fields
+            elements.usernameInput.value = '';
+            elements.codeInput.value = '';
+            
+            // Hide modal and initialize game
+            hideLoginModal();
+            await initGame();
+            
+            // Show welcome message
+            addNotification(`${response.username || username}님, 환영합니다!`, 'success');
+            
+            // Refresh the page to ensure all components are properly initialized
+            setTimeout(() => window.location.reload(), 500);
+        } else {
+            throw new Error('서버로부터 유효한 응답을 받지 못했습니다.');
+        }
+    } catch (error) {
+        console.error('로그인 오류:', error);
+        let errorMessage = '로그인 중 오류가 발생했습니다.';
+        
+        if (error.status === 401) {
+            errorMessage = '사용자명 또는 코드가 올바르지 않습니다.';
+        } else if (error.status === 400) {
+            errorMessage = '잘못된 요청입니다. 입력값을 확인해주세요.';
+        } else if (error.status === 500) {
+            errorMessage = '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+        } else if (!navigator.onLine) {
+            errorMessage = '인터넷 연결을 확인해주세요.';
+        }
+        
+        alert(errorMessage);
+    } finally {
+        // Reset button state
+        elements.loginBtn.disabled = false;
+        elements.loginBtn.innerHTML = loginBtnText;
+    }
+}
+
+// Toggle weapon type
+function toggleWeaponType() {
+    gameState.currentWeaponType = gameState.currentWeaponType === WEAPON_TYPES.SWORD 
+        ? WEAPON_TYPES.STICK 
+        : WEAPON_TYPES.SWORD;
+    
+    // Update button text
+    elements.toggleWeaponTypeBtn.textContent = `무기 전환: ${gameState.currentWeaponType === WEAPON_TYPES.SWORD ? '검' : '막대기'}`;
+    
+    // If no weapons, create a new one of the selected type
+    if (gameState.weapons.length === 0) {
+        createNewWeapon();
+    }
+}
+
 // Setup event listeners
 function setupEventListeners() {
+    // Weapon type toggle
+    if (elements.toggleWeaponTypeBtn) {
+        elements.toggleWeaponTypeBtn.onclick = toggleWeaponType;
+    }
+    
     // Enhance button
-    elements.enhanceBtn.onclick = enhanceWeapon;
+    if (elements.enhanceBtn) {
+        elements.enhanceBtn.onclick = enhanceWeapon;
+    }
     
     // Sell button
-    elements.sellBtn.onclick = sellWeapon;
+    if (elements.sellBtn) {
+        elements.sellBtn.onclick = sellWeapon;
+    }
     
-    // Login button
-    elements.loginBtn.onclick = async () => {
-        const username = elements.usernameInput.value.trim();
-        const code = elements.codeInput.value.trim();
-        
-        if (!username || !code) {
-            alert('사용자명과 코드를 모두 입력해주세요.');
-            return;
-        }
-        
-        // Show loading state
-        const loginBtnText = elements.loginBtn.innerHTML;
-        elements.loginBtn.disabled = true;
-        elements.loginBtn.innerHTML = '로그인 중...';
-        
-        try {
-            const response = await api.login(username, code);
-            
-            if (response && response.token) {
-                // Clear input fields
-                elements.usernameInput.value = '';
-                elements.codeInput.value = '';
-                
-                // Hide modal and initialize game
-                hideLoginModal();
-                await initGame();
-                
-                // Show welcome message
-                addNotification(`${username}님, 환영합니다!`, 'success');
-            } else {
-                throw new Error('로그인에 실패했습니다. 사용자명과 코드를 확인해주세요.');
-            }
-        } catch (error) {
-            alert(error.message || '로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
-        } finally {
-            // Reset button state
-            elements.loginBtn.disabled = false;
-            elements.loginBtn.innerHTML = loginBtnText;
-        }
-    };
+    // Login form
+    if (elements.loginForm) {
+        elements.loginForm.onsubmit = handleLogin;
+    }
     
     // Close modal when clicking outside
-    elements.loginModal.onclick = (e) => {
-        if (e.target === elements.loginModal) {
-            hideLoginModal();
-        }
-    };
+    if (elements.loginModal) {
+        elements.loginModal.onclick = (e) => {
+            if (e.target === elements.loginModal) {
+                hideLoginModal();
+            }
+        };
+    }
 }
 
 // Export functions for app.js

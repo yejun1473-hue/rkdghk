@@ -1,7 +1,10 @@
 // API Service for backend communication
 class ApiService {
     constructor() {
-        this.baseUrl = 'http://localhost:3001/api';
+        // Use current host and port for API requests
+        const port = window.location.port ? `:${window.location.port}` : '';
+        this.baseUrl = `${window.location.protocol}//${window.location.hostname}${port}/api`;
+        console.log('API Base URL:', this.baseUrl);
         this.token = localStorage.getItem('token');
     }
 
@@ -27,20 +30,33 @@ class ApiService {
         }
 
         try {
-            const response = await fetch(`${this.baseUrl}${endpoint}`, {
+            const fullUrl = `${this.baseUrl}${endpoint}`;
+            console.log(`Making request to: ${fullUrl}`, { options });
+            
+            const response = await fetch(fullUrl, {
                 ...options,
-                headers
+                headers,
+                credentials: 'include'  // Important for cookies/sessions
             });
 
-            const data = await response.json();
+            const data = await response.json().catch(() => ({}));
+            console.log(`Response from ${endpoint}:`, { status: response.status, data });
 
             if (!response.ok) {
-                throw new Error(data.error || 'Something went wrong');
+                const error = new Error(data.error || 'Something went wrong');
+                error.status = response.status;
+                error.response = data;
+                throw error;
             }
 
             return data;
         } catch (error) {
-            console.error('API Error:', error);
+            console.error('API Error Details:', {
+                message: error.message,
+                status: error.status,
+                response: error.response,
+                stack: error.stack
+            });
             throw error;
         }
     }

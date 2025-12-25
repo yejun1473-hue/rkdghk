@@ -24,14 +24,14 @@
         <main class="main-content">
             <div class="game-container">
                 <div class="weapon-display">
-                    <div class="weapon-image" id="weaponImage">
-                        <img src="images/sword.png" alt="무기" id="currentWeaponImg">
-                        <div class="weapon-level" id="weaponLevel">+0</div>
+                    <div class="weapon-type-toggle">
+                        <button id="toggleWeaponType" class="btn">무기 전환: 검</button>
                     </div>
-                    <div class="weapon-name" id="weaponName">기본 검</div>
-                    <div class="weapon-stats">
-                        <div>공격력: <span id="weaponAttack">10</span></div>
-                        <div>판매가: <span id="weaponPrice">0</span>G</div>
+                    <div class="weapon-info">
+                        <h2 id="weaponName">기본 검</h2>
+                        <p>강화 단계: <span id="weaponLevel">+0</span></p>
+                        <p>공격력: <span id="weaponAttack">10</span></p>
+                        <p>가격: <span id="weaponPrice">0</span> G</p>
                     </div>
                 </div>
 
@@ -88,18 +88,20 @@
         <!-- Login Modal -->
         <div class="modal" id="loginModal">
             <div class="modal-content">
-                <h2>로그인 / 회원가입</h2>
-                <div class="form-group">
-                    <label for="username">사용자명</label>
-                    <input type="text" id="usernameInput" placeholder="사용자명을 입력하세요">
-                </div>
-                <div class="form-group">
-                    <label for="code">코드</label>
-                    <input type="password" id="code" placeholder="코드를 입력하세요">
-                </div>
-                <div class="form-buttons">
-                    <button class="btn" id="loginBtn">로그인</button>
-                </div>
+                <h2>로그인</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="usernameInput">사용자명</label>
+                        <input type="text" id="usernameInput" name="username" placeholder="사용자명을 입력하세요" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="codeInput">코드</label>
+                        <input type="password" id="codeInput" name="code" placeholder="코드를 입력하세요" required>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn" id="loginBtn">로그인</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
