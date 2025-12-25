@@ -41,9 +41,8 @@ const elements = {
     // Modal
     loginModal: document.getElementById('loginModal'),
     usernameInput: document.getElementById('usernameInput'),
-    personalKeyInput: document.getElementById('personalKey'),
-    loginBtn: document.getElementById('loginBtn'),
-    registerBtn: document.getElementById('registerBtn')
+    codeInput: document.getElementById('code'),
+    loginBtn: document.getElementById('loginBtn')
 };
 
 // Enhancement rates (same as backend for consistency)
@@ -342,24 +341,41 @@ function setupEventListeners() {
     // Login button
     elements.loginBtn.onclick = async () => {
         const username = elements.usernameInput.value.trim();
-        const code = document.getElementById('code').value.trim();
+        const code = elements.codeInput.value.trim();
         
         if (!username || !code) {
             alert('사용자명과 코드를 모두 입력해주세요.');
             return;
         }
         
+        // Show loading state
+        const loginBtnText = elements.loginBtn.innerHTML;
+        elements.loginBtn.disabled = true;
+        elements.loginBtn.innerHTML = '로그인 중...';
+        
         try {
             const response = await api.login(username, code);
+            
             if (response && response.token) {
+                // Clear input fields
+                elements.usernameInput.value = '';
+                elements.codeInput.value = '';
+                
+                // Hide modal and initialize game
                 hideLoginModal();
-                initGame();
+                await initGame();
+                
+                // Show welcome message
+                addNotification(`${username}님, 환영합니다!`, 'success');
             } else {
-                throw new Error('로그인 응답이 올바르지 않습니다.');
+                throw new Error('로그인에 실패했습니다. 사용자명과 코드를 확인해주세요.');
             }
         } catch (error) {
-            console.error('Login error:', error);
-            alert('로그인에 실패했습니다: ' + (error.message || '알 수 없는 오류'));
+            alert(error.message || '로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
+        } finally {
+            // Reset button state
+            elements.loginBtn.disabled = false;
+            elements.loginBtn.innerHTML = loginBtnText;
         }
     };
     
