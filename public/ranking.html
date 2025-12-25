@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>랭킹 - 검 강화하기</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        .ranking-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .ranking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .ranking-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .ranking-tab {
+            padding: 8px 16px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            background: #f5f5f5;
+            cursor: pointer;
+        }
+        .ranking-tab.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+        .ranking-list {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .ranking-item:last-child {
+            border-bottom: none;
+        }
+        .rank {
+            font-size: 1.2em;
+            font-weight: bold;
+            width: 40px;
+            text-align: center;
+        }
+        .rank-1 { color: gold; }
+        .rank-2 { color: silver; }
+        .rank-3 { color: #cd7f32; } /* bronze */
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            margin: 0 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+        .player-info {
+            flex: 1;
+        }
+        .player-name {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        .player-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .player-score {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="app-header">
+            <h1>랭킹</h1>
+            <div class="user-info">
+                <span id="username">게스트</span>
+                <div class="currency">
+                    <span class="gold">G: <span id="gold">0</span></span>
+                    <span class="choco">C: <span id="choco">0</span></span>
+                    <span class="money">M: <span id="money">0</span></span>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="ranking-container">
+                <div class="ranking-header">
+                    <h2>전체 랭킹</h2>
+                    <div class="ranking-tabs">
+                        <div class="ranking-tab active" data-category="all">전체</div>
+                        <div class="ranking-tab" data-category="weekly">주간</div>
+                        <div class="ranking-tab" data-category="friends">친구</div>
+                    </div>
+                </div>
+
+                <div class="ranking-list" id="rankingList">
+                    <!-- Ranking items will be loaded here -->
+                    <div class="loading">로딩 중...</div>
+                </div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <button class="nav-btn" data-tab="enhance">
+                <i class="material-icons">build</i>
+                <span>강화</span>
+            </button>
+            <button class="nav-btn" data-tab="shop">
+                <i class="material-icons">store</i>
+                <span>상점</span>
+            </button>
+            <button class="nav-btn" data-tab="battle">
+                <i class="material-icons">sports_martial_arts</i>
+                <span>배틀</span>
+            </button>
+            <button class="nav-btn active" data-tab="ranking">
+                <i class="material-icons">leaderboard</i>
+                <span>랭킹</span>
+            </button>
+            <button class="nav-btn" data-tab="profile">
+                <i class="material-icons">person</i>
+                <span>프로필</span>
+            </button>
+        </nav>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load ranking data
+            loadRanking('all');
+            
+            // Tab switching
+            document.querySelectorAll('.ranking-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.ranking-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    loadRanking(tab.dataset.category);
+                });
+            });
+
+            // Update user info
+            if (typeof updateUserInfo === 'function') {
+                updateUserInfo();
+            }
+        });
+
+        async function loadRanking(category) {
+            const rankingList = document.getElementById('rankingList');
+            rankingList.innerHTML = '<div class="loading">로딩 중...</div>';
+
+            try {
+                // This would be an API call in a real application
+                // const response = await fetch(`/api/ranking?category=${category}`);
+                // const data = await response.json();
+                
+                // Mock data for demonstration
+                const mockData = [
+                    { id: 1, name: '전설의검사', level: 150, score: 12500, rank: 1 },
+                    { id: 2, name: '강화의달인', level: 145, score: 11800, rank: 2 },
+                    { id: 3, name: '무적검신', level: 142, score: 11500, rank: 3 },
+                    { id: 4, name: '불꽃검성', level: 140, score: 11000, rank: 4 },
+                    { id: 5, name: '천둥의기사', level: 138, score: 10500, rank: 5 },
+                    { id: 6, name: '어둠의전사', level: 135, score: 9800, rank: 6 },
+                    { id: 7, name: '빛의수호자', level: 132, score: 9500, rank: 7 },
+                    { id: 8, name: '바람의검객', level: 130, score: 9200, rank: 8 },
+                    { id: 9, name: '번개의검사', level: 128, score: 8900, rank: 9 },
+                    { id: 10, name: '대지의용사', level: 125, score: 8500, rank: 10 }
+                ];
+
+                // Display ranking
+                rankingList.innerHTML = '';
+                mockData.forEach(player => {
+                    const rankClass = `rank-${player.rank}`;
+                    const firstLetter = player.name.charAt(0).toUpperCase();
+                    
+                    const playerElement = document.createElement('div');
+                    playerElement.className = 'ranking-item';
+                    playerElement.innerHTML = `
+                        <div class="rank ${rankClass}">${player.rank}</div>
+                        <div class="player-avatar">${firstLetter}</div>
+                        <div class="player-info">
+                            <div class="player-name">${player.name}</div>
+                            <div class="player-stats">
+                                <span>Lv. ${player.level}</span>
+                                <span>점수: <span class="player-score">${player.score.toLocaleString()}</span></span>
+                            </div>
+                        </div>
+                    `;
+                    rankingList.appendChild(playerElement);
+                });
+            } catch (error) {
+                console.error('랭킹을 불러오는 중 오류가 발생했습니다:', error);
+                rankingList.innerHTML = '<div class="error">랭킹을 불러오는 중 오류가 발생했습니다.</div>';
+            }
+        }
+    </script>
+</body>
+</html>

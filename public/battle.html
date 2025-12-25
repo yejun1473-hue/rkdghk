@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>배틀 - 검 강화하기</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div class="app">
+        <header class="app-header">
+            <h1>배틀</h1>
+            <div class="user-info">
+                <span id="username">게스트</span>
+                <div class="currency">
+                    <span class="gold">G: <span id="gold">0</span></span>
+                    <span class="choco">C: <span id="choco">0</span></span>
+                    <span class="money">M: <span id="money">0</span></span>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="battle-container">
+                <div class="battle-opponents">
+                    <div class="battle-player">
+                        <div class="player-info">
+                            <h3>나</h3>
+                            <div class="player-stats">
+                                <p>공격력: <span id="playerAttack">0</span></p>
+                                <p>체력: <span id="playerHp">100</span>/100</p>
+                            </div>
+                        </div>
+                        <div class="weapon-display" id="playerWeapon">
+                            <!-- Player's weapon will be displayed here -->
+                        </div>
+                    </div>
+
+                    <div class="vs">VS</div>
+
+                    <div class="battle-opponent">
+                        <div class="opponent-info">
+                            <h3>상대방</h3>
+                            <div class="opponent-stats">
+                                <p>공격력: <span id="opponentAttack">0</span></p>
+                                <p>체력: <span id="opponentHp">100</span>/100</p>
+                            </div>
+                        </div>
+                        <div class="weapon-display" id="opponentWeapon">
+                            <!-- Opponent's weapon will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="battle-controls">
+                    <button id="findMatchBtn" class="btn battle-btn">대전 상대 찾기</button>
+                    <button id="attackBtn" class="btn attack-btn" disabled>공격하기</button>
+                    <div id="battleLog" class="battle-log">
+                        <!-- Battle log will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <button class="nav-btn" data-tab="enhance">
+                <i class="material-icons">build</i>
+                <span>강화</span>
+            </button>
+            <button class="nav-btn" data-tab="shop">
+                <i class="material-icons">store</i>
+                <span>상점</span>
+            </button>
+            <button class="nav-btn active" data-tab="battle">
+                <i class="material-icons">sports_martial_arts</i>
+                <span>배틀</span>
+            </button>
+            <button class="nav-btn" data-tab="ranking">
+                <i class="material-icons">leaderboard</i>
+                <span>랭킹</span>
+            </button>
+            <button class="nav-btn" data-tab="profile">
+                <i class="material-icons">person</i>
+                <span>프로필</span>
+            </button>
+        </nav>
+    </div>
+
+    <script src="js/api.js" type="module"></script>
+    <script src="js/navigation.js" type="module"></script>
+    <script src="js/battleSystem.js" type="module"></script>
+    <script type="module">
+        // Import necessary functions
+        import { updateUserInfo } from './js/navigation.js';
+        import { BattleSystem, runExampleBattle } from './js/battleSystem.js';
+
+        // Battle page initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize battle system
+            const findMatchBtn = document.getElementById('findMatchBtn');
+            const attackBtn = document.getElementById('attackBtn');
+            const battleLog = document.getElementById('battleLog');
+
+            if (findMatchBtn) {
+                findMatchBtn.addEventListener('click', () => {
+                    // Example battle for now - replace with actual matchmaking
+                    const result = runExampleBattle();
+                    if (battleLog) {
+                        battleLog.textContent = result.log[0];
+                    }
+                    attackBtn.disabled = false;
+                });
+            }
+
+            if (attackBtn) {
+                attackBtn.addEventListener('click', () => {
+                    // Add attack logic here
+                    if (battleLog) {
+                        battleLog.textContent = '공격이 실행되었습니다!';
+                    }
+                });
+            }
+            
+            // Update user info
+            if (typeof updateUserInfo === 'function') {
+                updateUserInfo();
+            }
+        });
+    </script>
+</body>
+</html>

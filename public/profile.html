@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로필 - 검 강화하기</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material-icons" rel="stylesheet">
+    <style>
+        .profile-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: #666;
+            position: relative;
+            overflow: hidden;
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-name {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .profile-level {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+        .recent-activity {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .activity-title {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .activity-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #e3f2fd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1976d2;
+        }
+        .activity-details {
+            flex: 1;
+        }
+        .activity-message {
+            font-size: 0.95em;
+        }
+        .activity-time {
+            font-size: 0.8em;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="app-header">
+            <h1>프로필</h1>
+            <div class="user-info">
+                <span id="username">게스트</span>
+                <div class="currency">
+                    <span class="gold">G: <span id="gold">0</span></span>
+                    <span class="choco">C: <span id="choco">0</span></span>
+                    <span class="money">M: <span id="money">0</span></span>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="profile-container">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="userAvatar">
+                        <span class="material-icons">person</span>
+                    </div>
+                    <div class="profile-name" id="userName">게스트</div>
+                    <div class="profile-level">Lv. <span id="userLevel">1</span></div>
+                </div>
+
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalBattles">0</div>
+                        <div class="stat-label">총 배틀</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="winRate">0%</div>
+                        <div class="stat-label">승률</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="highestRank">-</div>
+                        <div class="stat-label">최고 순위</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="playTime">0h</div>
+                        <div class="stat-label">플레이 시간</div>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <button class="btn btn-primary" id="editProfileBtn">
+                        <i class="material-icons">edit</i>
+                        <span>프로필 수정</span>
+                    </button>
+                    <button class="btn btn-secondary" id="achievementsBtn">
+                        <i class="material-icons">emoji_events</i>
+                        <span>업적 보기</span>
+                    </button>
+                    <button class="btn btn-secondary" id="inventoryBtn">
+                        <i class="material-icons">inventory_2</i>
+                        <span>인벤토리</span>
+                    </button>
+                    <button class="btn btn-danger" id="logoutBtn">
+                        <i class="material-icons">logout</i>
+                        <span>로그아웃</span>
+                    </button>
+                </div>
+
+                <div class="recent-activity">
+                    <div class="activity-header">
+                        <div class="activity-title">최근 활동</div>
+                        <button class="btn-text">더보기</button>
+                    </div>
+                    <div id="recentActivities">
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="material-icons" style="font-size: 16px;">sports_esports</i>
+                            </div>
+                            <div class="activity-details">
+                                <div class="activity-message">게임에 오신 것을 환영합니다!</div>
+                                <div class="activity-time">방금 전</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <button class="nav-btn" data-tab="enhance">
+                <i class="material-icons">build</i>
+                <span>강화</span>
+            </button>
+            <button class="nav-btn" data-tab="shop">
+                <i class="material-icons">store</i>
+                <span>상점</span>
+            </button>
+            <button class="nav-btn" data-tab="battle">
+                <i class="material-icons">sports_martial_arts</i>
+                <span>배틀</span>
+            </button>
+            <button class="nav-btn" data-tab="ranking">
+                <i class="material-icons">leaderboard</i>
+                <span>랭킹</span>
+            </button>
+            <button class="nav-btn active" data-tab="profile">
+                <i class="material-icons">person</i>
+                <span>프로필</span>
+            </button>
+        </nav>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load user profile data
+            loadProfile();
+            
+            // Add event listeners
+            document.getElementById('editProfileBtn').addEventListener('click', () => {
+                alert('프로필 수정 기능은 곧 추가될 예정입니다.');
+            });
+            
+            document.getElementById('achievementsBtn').addEventListener('click', () => {
+                alert('업적 보기 기능은 곧 추가될 예정입니다.');
+            });
+            
+            document.getElementById('inventoryBtn').addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+            
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                if (confirm('정말 로그아웃 하시겠습니까?')) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                }
+            });
+
+            // Update user info in header
+            if (typeof updateUserInfo === 'function') {
+                updateUserInfo();
+            }
+        });
+
+        async function loadProfile() {
+            try {
+                // This would be an API call in a real application
+                // const response = await fetch('/api/profile');
+                // const data = await response.json();
+                
+                // Mock data for demonstration
+                const mockData = {
+                    username: '게스트',
+                    level: 15,
+                    totalBattles: 42,
+                    wins: 28,
+                    highestRank: 35,
+                    playTime: 28.5 // hours
+                };
+
+                // Update UI with profile data
+                document.getElementById('userName').textContent = mockData.username;
+                document.getElementById('userLevel').textContent = mockData.level;
+                document.getElementById('totalBattles').textContent = mockData.totalBattles;
+                document.getElementById('winRate').textContent = 
+                    mockData.totalBattles > 0 
+                        ? Math.round((mockData.wins / mockData.totalBattles) * 100) + '%' 
+                        : '0%';
+                document.getElementById('highestRank').textContent = 
+                    mockData.highestRank > 0 ? '#' + mockData.highestRank : '-';
+                document.getElementById('playTime').textContent = mockData.playTime + 'h';
+
+                // Update username in header
+                const usernameElement = document.querySelector('#username');
+                if (usernameElement) {
+                    usernameElement.textContent = mockData.username;
+                }
+
+            } catch (error) {
+                console.error('프로필을 불러오는 중 오류가 발생했습니다:', error);
+            }
+        }
+    </script>
+</body>
+</html>
