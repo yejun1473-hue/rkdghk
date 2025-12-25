@@ -16,9 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     const currentPage = window.location.pathname.split('/').pop();
     
-    // If not on login page and no token, redirect to login
-    if (!token && !currentPage.includes('login.html') && currentPage !== '') {
-        window.location.href = '/login.html';
+    // Redirect rules:
+    // 1. If user has a token and is on login page, redirect to home
+    if (token && currentPage === 'login.html') {
+        window.location.href = 'index.html';
+        return;
+    } 
+    // 2. If user has no token and is not on login page, redirect to login
+    else if (!token && currentPage !== 'login.html' && currentPage !== '') {
+        window.location.href = 'login.html';
         return;
     }
 
@@ -103,23 +109,53 @@ document.addEventListener('DOMContentLoaded', () => {
         // Handle form submission
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
-            loginForm.addEventListener('submit', (e) => {
+            loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                // Add your login logic here
-                const username = document.getElementById('usernameInput')?.value;
+                
+                const username = document.getElementById('usernameInput')?.value.trim();
                 const password = document.getElementById('codeInput')?.value;
                 
-                // For now, just close the modal
-                const modal = document.getElementById('loginModal');
-                if (modal) {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = 'auto';
+                if (!username || !password) {
+                    alert('사용자명과 코드를 모두 입력해주세요.');
+                    return;
                 }
                 
-                // Update UI to show logged in state
-                const usernameDisplay = document.getElementById('username');
-                if (username && usernameDisplay) {
-                    usernameDisplay.textContent = username || '사용자';
+                try {
+                    // Here you would typically make an API call to your backend
+                    // For now, we'll simulate a successful login
+                    console.log('Logging in with:', { username });
+                    
+                    // Simulate API call delay
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    // Store the token in localStorage
+                    const fakeToken = `fake-jwt-token-${Date.now()}`;
+                    localStorage.setItem('token', fakeToken);
+                    
+                    // Close the modal
+                    const modal = document.getElementById('loginModal');
+                    if (modal) {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }
+                    
+                    // Update UI
+                    const usernameDisplay = document.getElementById('username');
+                    if (usernameDisplay) {
+                        usernameDisplay.textContent = username;
+                    }
+                    
+                    // Show success message
+                    window.addNotification('로그인 성공!', 'success');
+                    
+                    // If on login page, redirect to home
+                    if (window.location.pathname.endsWith('login.html')) {
+                        window.location.href = 'index.html';
+                    }
+                    
+                } catch (error) {
+                    console.error('Login failed:', error);
+                    alert('로그인에 실패했습니다. 다시 시도해주세요.');
                 }
             });
         }
