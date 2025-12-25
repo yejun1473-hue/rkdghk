@@ -20,8 +20,6 @@ const elements = {
     money: document.getElementById('money'),
     
     // Weapon Display
-    weaponImage: document.getElementById('weaponImage'),
-    currentWeaponImg: document.getElementById('currentWeaponImg'),
     weaponName: document.getElementById('weaponName'),
     weaponLevel: document.getElementById('weaponLevel'),
     weaponAttack: document.getElementById('weaponAttack'),
@@ -423,33 +421,41 @@ function toggleWeaponType() {
 
 // Setup event listeners
 function setupEventListeners() {
-    // Weapon type toggle
-    if (elements.toggleWeaponTypeBtn) {
-        elements.toggleWeaponTypeBtn.onclick = toggleWeaponType;
-    }
-    
     // Enhance button
     if (elements.enhanceBtn) {
-        elements.enhanceBtn.onclick = enhanceWeapon;
+        elements.enhanceBtn.addEventListener('click', enhanceWeapon);
     }
     
     // Sell button
     if (elements.sellBtn) {
-        elements.sellBtn.onclick = sellWeapon;
+        elements.sellBtn.addEventListener('click', sellWeapon);
     }
     
-    // Login form
+    // Toggle weapon type
+    if (elements.toggleWeaponTypeBtn) {
+        elements.toggleWeaponTypeBtn.addEventListener('click', toggleWeaponType);
+    }
+    
+    // Login form - Add proper event listener
     if (elements.loginForm) {
-        elements.loginForm.onsubmit = handleLogin;
+        elements.loginForm.addEventListener('submit', handleLogin);
     }
     
     // Close modal when clicking outside
     if (elements.loginModal) {
-        elements.loginModal.onclick = (e) => {
+        elements.loginModal.addEventListener('click', (e) => {
             if (e.target === elements.loginModal) {
                 hideLoginModal();
             }
-        };
+        });
+    }
+    
+    // Add click event to login button (as a fallback)
+    if (elements.loginBtn) {
+        elements.loginBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleLogin(e);
+        });
     }
 }
 
