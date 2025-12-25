@@ -342,15 +342,15 @@ function setupEventListeners() {
     // Login button
     elements.loginBtn.onclick = async () => {
         const username = elements.usernameInput.value.trim();
-        const personalKey = elements.personalKey.value.trim();
+        const code = document.getElementById('code').value.trim();
         
-        if (!username || !personalKey) {
-            alert('사용자명과 개인키를 모두 입력해주세요.');
+        if (!username || !code) {
+            alert('사용자명과 코드를 모두 입력해주세요.');
             return;
         }
         
         try {
-            const response = await api.login(username, personalKey);
+            const response = await api.login(username, code);
             if (response && response.token) {
                 hideLoginModal();
                 initGame();
@@ -360,29 +360,6 @@ function setupEventListeners() {
         } catch (error) {
             console.error('Login error:', error);
             alert('로그인에 실패했습니다: ' + (error.message || '알 수 없는 오류'));
-        }
-    };
-    
-    // Register button
-    elements.registerBtn.onclick = async () => {
-        const username = elements.usernameInput.value.trim();
-        const personalKey = elements.personalKeyInput.value.trim();
-        
-        if (!username || !personalKey) {
-            alert('사용자명과 개인키를 모두 입력해주세요.');
-            return;
-        }
-        
-        if (personalKey.length !== 8 || !/^\d+$/.test(personalKey)) {
-            alert('개인키는 8자리 숫자여야 합니다.');
-            return;
-        }
-        
-        try {
-            await api.register(username, personalKey);
-            alert('회원가입이 완료되었습니다. 로그인해주세요.');
-        } catch (error) {
-            alert('회원가입에 실패했습니다: ' + (error.message || '알 수 없는 오류'));
         }
     };
     
