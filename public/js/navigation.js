@@ -1,5 +1,15 @@
 // navigation.js - Handles all navigation and button functionality
 
+// Simple navigation function
+function navigateTo(page) {
+    if (page === 'logout') {
+        localStorage.removeItem('token');
+        window.location.href = 'login.html';
+    } else {
+        window.location.href = page + '.html';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Check authentication
     const token = localStorage.getItem('token');
@@ -52,44 +62,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Handle tab switching for both data-tab and nav-btn class
-    function setupTabNavigation(selector, getTabName) {
-        document.querySelectorAll(selector).forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                e.preventDefault();
-                const tabName = getTabName(tab);
-                const pageMap = {
-                    'enhance': 'index.html',
-                    'battle': 'battle.html',
-                    'ranking': 'ranking.html',
-                    'profile': 'profile.html',
-                    'shop': 'shop.html'
-                };
-                
-                if (pageMap[tabName]) {
-                    window.location.href = pageMap[tabName];
-                }
-            });
+    // Handle navigation buttons
+    document.querySelectorAll('[data-nav]').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = button.getAttribute('data-nav');
+            navigateTo(target);
+        });
+    });
+
+    // Handle login/logout button
+    const loginButton = document.getElementById('loginButton');
+    if (loginButton) {
+        loginButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            const modal = document.getElementById('loginModal');
+            if (modal) {
+                modal.style.display = 'block';
+            } else {
+                navigateTo('login');
+            }
         });
     }
-
-    // Setup navigation for data-tab attributes
-    setupTabNavigation('[data-tab]', (tab) => tab.getAttribute('data-tab'));
-    
-    // Setup navigation for nav-btn class
-    setupTabNavigation('.nav-btn', (tab) => {
-        const icon = tab.querySelector('i.material-icons');
-        if (icon) {
-            return {
-                'enhancement': 'enhance',
-                'sports_esports': 'battle',
-                'leaderboard': 'ranking',
-                'person': 'profile',
-                'store': 'shop'
-            }[icon.textContent] || '';
-        }
-        return '';
-    });
 
     // Attach click handlers to all navigation buttons
     Object.entries(navButtons).forEach(([id, action]) => {
